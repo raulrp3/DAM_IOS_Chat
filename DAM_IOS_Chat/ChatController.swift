@@ -13,9 +13,13 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var mTableview: UITableView!
     
     override func viewDidLoad() {
-        self.navigationController?.navigationBar.topItem?.title = "Conversación con \(AppData.name)"
+        self.navigationItem.title = "Conversación con \(AppData.name)"
         
         self.hideKeyboardWhenTappedAraound()
+        
+        AppData.active = true
+        
+        self.loadMessages(AppData.name)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -41,6 +45,8 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBAction func sendAction(_ sender: Any) {
         AppData.chats[AppData.name]?.append((title: "Raul", body: self.message.text!))
         
+        self.saveMessages(AppData.name)
+        
         self.mTableview.reloadData()
         
         let urlString: String = "\(AppData.url)\(AppData.name)/index.php?token=\(AppData.token)&title=Raul&body=\(message.text!.replacingOccurrences(of: " ", with: "%20"))"
@@ -58,6 +64,8 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     @IBAction func backAction(_ sender: Any) {
+        AppData.active = false
+        
         DispatchQueue.main.async{
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let contactsView = storyboard.instantiateViewController(identifier: "contactsView")
@@ -66,6 +74,39 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             self.present(contactsView, animated: true, completion: nil)
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        self.saveMessages(AppData.name)
+        
+        AppData.name = ""
+        AppData.token = ""
+    }
+    
+    func loadMessages(_ name: String){
+        if UserDefaults.standard.array(forKey: "titles\(name)") != nil && UserDefaults.standard.array(forKey: "bodys\(name)") != nil{
+            let titles: [String] = UserDefaults.standard.array(forKey: "titles\(name)") as! [String]
+            let bodys: [String] = UserDefaults.standard.array(forKey: "bodys\(name)") as! [String]
+            
+            AppData.chats[name]?.removeAll()
+            
+            for (index, title) in titles.enumerated(){
+                AppData.chats[name]?.append((title: title, body: bodys[index]))
+            }
+        }
+    }
+    
+    func saveMessages(_ name: String){
+        var titles: [String] = []
+        var bodys: [String] = []
+        
+        for data in (AppData.chats[name])!{
+            titles.append(data.title)
+            bodys.append(data.body)
+        }
+        
+        UserDefaults.standard.set(titles, forKey: "titles\(name)")
+        UserDefaults.standard.set(bodys, forKey: "bodys\(name)")
     }
 }
 

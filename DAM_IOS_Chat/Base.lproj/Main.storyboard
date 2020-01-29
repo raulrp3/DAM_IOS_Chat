@@ -59,31 +59,18 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Conversaciones chat" id="LMe-Tn-OJs"/>
+                    <connections>
+                        <segue destination="xgd-Dc-XeY" kind="show" identifier="segue" id="hfX-Ir-Tfe"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="idV-lU-LHH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="205.79710144927537" y="105.80357142857143"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="Q57-fk-Rug">
-            <objects>
-                <navigationController storyboardIdentifier="chatView" id="Awt-P1-aWR" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Loo-Ki-EMz">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="xgd-Dc-XeY" kind="relationship" relationship="rootViewController" id="hw5-nM-CsT"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="7kv-pY-lGi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="961" y="106"/>
-        </scene>
         <!--Chat Controller-->
         <scene sceneID="XTE-Za-yzZ">
             <objects>
-                <viewController storyboardIdentifier="chatController" id="xgd-Dc-XeY" customClass="ChatController" customModule="DAM_IOS_Chat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="chatView" id="xgd-Dc-XeY" customClass="ChatController" customModule="DAM_IOS_Chat" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qho-ib-Rbh">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -141,6 +128,7 @@
                         <barButtonItem key="leftBarButtonItem" title="Back" id="htL-gq-faz">
                             <connections>
                                 <action selector="backAction:" destination="xgd-Dc-XeY" id="tiH-mv-Why"/>
+                                <segue destination="huH-Is-KUh" kind="show" id="Vco-P1-P3O"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -151,7 +139,10 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BXC-DS-ezE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1695.6521739130435" y="105.80357142857143"/>
+            <point key="canvasLocation" x="1123" y="106"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="f5A-kq-c1W"/>
+    </inferredMetricsTieBreakers>
 </document>

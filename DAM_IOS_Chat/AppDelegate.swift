@@ -74,47 +74,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             completionHandler(.failed)
             return
         }
-
+        
         let title = aps["alert"]?["title"] as! String
         let body = aps["alert"]?["body"] as! String
+        
+        self.loadMessages(title)
 
         AppData.chats[title]?.append((title: title, body: body))
         
-        DispatchQueue.main.async {
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.0, repeats: false)
-
-            let content = UNMutableNotificationContent()
-            content.title = "Notificación de \(title)"
-            content.subtitle = ""
-            content.body = "\(title): \(body)"
-            content.sound = .default
-
-            let request = UNNotificationRequest(identifier: "NOTIFICACION", content: content, trigger: trigger)
-
-            UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-            UNUserNotificationCenter.current().add(request){ error in
-                if let error = error{
-                    print("¡Error: \(error)!")
-                }
-            }
-        }
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void){
-        completionHandler([.alert, .sound])
-        
-        let title: String = notification.request.content.title
-        let body: String = notification.request.content.body
-        
-        AppData.chats[title]?.append((title: title, body: body))
+        self.saveMessages(title)
         
         DispatchQueue.main.async{
             let viewController: UINavigationController = (UIApplication.shared.windows.filter{$0.isKeyWindow}.first)!.rootViewController as! UINavigationController
             
-            if title == AppData.name{
+            if AppData.active{
                 let view: ChatController = viewController.visibleViewController as! ChatController
                 view.mTableview.reloadData()
             }
+        }
+        
+        completionHandler(.noData)
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void){
+        if notification.request.content.title != AppData.name{
+            completionHandler([.alert, .sound])
+        }else{
+            completionHandler([])
         }
     }
     
@@ -129,9 +115,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     
                     let body: String = "Estoy ocupado, por favor no molestar."
                     
+                    self.loadMessages(title)
+                    
                     AppData.chats[title]?.append((title: "Raul", body: body))
                     
-                    let urlString: String = "\(AppData.url)\(AppData.name)/index.php?token=\(token)&title=Raul&body=\(body.replacingOccurrences(of: " ", with: "%20"))"
+                    self.saveMessages(title)
+                    
+                    let urlString: String = "\(AppData.url)\(title)/index.php?token=\(token)&title=Raul&body=\(body.replacingOccurrences(of: " ", with: "%20"))"
                     
                     guard let url = URL(string: urlString) else { return }
                     
@@ -145,17 +135,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     AppData.name = aps["alert"]?["title"] as! String
                     AppData.token = self.searchDeviceToken(AppData.name)
                     
-                    let body: String = aps["alert"]?["body"] as! String
-                    
-                    AppData.chats[AppData.name]?.append((title: AppData.name, body: body))
-                    
                     DispatchQueue.main.async{
                         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                        let chatView = storyboard.instantiateViewController(identifier: "chatView")
-                        
-                        chatView.modalPresentationStyle = UIModalPresentationStyle.fullScreen
-                        
-                        (UIApplication.shared.windows.filter{$0.isKeyWindow}.first)?.rootViewController?.present(chatView, animated: true, completion: nil)
+                        let chatView = storyboard.instantiateViewController(identifier: "chatView") as! ChatController
+                            
+                        let window = (UIApplication.shared.windows.filter{$0.isKeyWindow}.first?.rootViewController) as! UINavigationController
+
+                        window.pushViewController(chatView, animated: true)
                     }
                 break
             }
@@ -174,6 +160,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         return token
+    }
+    
+    func loadMessages(_ name: String){
+        if UserDefaults.standard.array(forKey: "titles\(name)") != nil && UserDefaults.standard.array(forKey: "bodys\(name)") != nil{
+            let titles: [String] = UserDefaults.standard.array(forKey: "titles\(name)") as! [String]
+            let bodys: [String] = UserDefaults.standard.array(forKey: "bodys\(name)") as! [String]
+            
+            AppData.chats[name]?.removeAll()
+            
+            for (index, title) in titles.enumerated(){
+                AppData.chats[name]?.append((title: title, body: bodys[index]))
+            }
+        }
+    }
+    
+    func saveMessages(_ name: String){
+        var titles: [String] = []
+        var bodys: [String] = []
+        
+        for data in (AppData.chats[name])!{
+            titles.append(data.title)
+            bodys.append(data.body)
+        }
+        
+        UserDefaults.standard.set(titles, forKey: "titles\(name)")
+        UserDefaults.standard.set(bodys, forKey: "bodys\(name)")
     }
 }
 
