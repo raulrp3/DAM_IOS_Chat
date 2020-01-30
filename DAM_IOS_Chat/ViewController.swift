@@ -58,7 +58,7 @@ class ViewController: UITableViewController {
                 self.removeChat(name)
             })
             
-            let cancel = UIAlertAction(title: "Cancelar", style: .default, handler: nil)
+            let cancel = UIAlertAction(title: "Cancelar", style: .destructive, handler: nil)
             
             alertController.addAction(cancel)
             alertController.addAction(accept)

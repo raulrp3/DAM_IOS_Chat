@@ -11,6 +11,7 @@ import UIKit
 class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var message: UITextField!
     @IBOutlet weak var mTableview: UITableView!
+    @IBOutlet weak var mButton: UIButton!
     
     override func viewDidLoad() {
         self.navigationItem.title = "Conversación con \(AppData.name)"
@@ -20,6 +21,10 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
         AppData.active = true
         
         self.loadMessages(AppData.name)
+        
+        mButton.layer.cornerRadius = 5
+        
+        self.registerForKeyboardNotifications()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -33,9 +38,31 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "mCellChat") as! CellChat
         
-        cell.message.text = "\(AppData.chats[AppData.name]![indexPath.row].title): \(AppData.chats[AppData.name]![indexPath.row].body)"
+        let title: String = AppData.chats[AppData.name]![indexPath.row].title
+        let body: String = AppData.chats[AppData.name]![indexPath.row].body
+        
+        cell.message.text = "\(body)"
+        
+        if title == "Raul"{
+            cell.message.textAlignment = .right
+            cell.backgroundColor = UIColor(red: 195/255, green: 207/255, blue: 230/255, alpha: 1.0)
+        }else{
+            cell.message.textAlignment = .left
+            cell.backgroundColor = UIColor(red: 189/255, green: 210/255, blue: 252/255, alpha: 1.0)
+        }
         
         return cell;
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let verticalPadding: CGFloat = 5
+        let horizontalPadding: CGFloat = 20
+
+        let maskLayer = CALayer()
+        maskLayer.cornerRadius = 10
+        maskLayer.backgroundColor = UIColor.black.cgColor
+        maskLayer.frame = CGRect(x: cell.bounds.origin.x, y: cell.bounds.origin.y, width: cell.bounds.width, height: cell.bounds.height).insetBy(dx: horizontalPadding/2, dy: verticalPadding/2)
+        cell.layer.mask = maskLayer
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -107,6 +134,31 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         UserDefaults.standard.set(titles, forKey: "titles\(name)")
         UserDefaults.standard.set(bodys, forKey: "bodys\(name)")
+    }
+    
+    func registerForKeyboardNotifications(){
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(notification:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification){
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue{
+            if self.view.frame.origin.y == 0{
+                UIView.animate(withDuration: 0.5, delay: 0.0, options: [], animations: { [weak self] in
+                    self?.view.frame.origin.y -= keyboardFrame.cgRectValue.height
+                }, completion: nil)
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification){
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue{
+            if self.view.frame.origin.y != 0{
+                UIView.animate(withDuration: 0.5, delay: 0.0, options: [], animations: { [weak self] in
+                    self?.view.frame.origin.y += keyboardFrame.cgRectValue.height
+                }, completion: nil)
+            }
+        }
     }
 }
 

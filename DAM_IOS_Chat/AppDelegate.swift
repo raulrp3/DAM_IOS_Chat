@@ -130,7 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                             print(error!.localizedDescription)
                         }
                     }.resume()
-                break
+                    break;
                 default:
                     AppData.name = aps["alert"]?["title"] as! String
                     AppData.token = self.searchDeviceToken(AppData.name)
@@ -143,7 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
                         window.pushViewController(chatView, animated: true)
                     }
-                break
+                    break;
             }
         }
         
