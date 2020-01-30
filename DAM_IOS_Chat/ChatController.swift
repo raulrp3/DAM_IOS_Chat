@@ -25,6 +25,13 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
         mButton.layer.cornerRadius = 5
         
         self.registerForKeyboardNotifications()
+        
+        mTableview.estimatedRowHeight = 68.0
+        mTableview.rowHeight = UITableView.automaticDimension
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        mTableview.reloadData()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -65,9 +72,9 @@ class ChatController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.layer.mask = maskLayer
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    /*func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
-    }
+    }*/
     
     @IBAction func sendAction(_ sender: Any) {
         AppData.chats[AppData.name]?.append((title: "Raul", body: self.message.text!))

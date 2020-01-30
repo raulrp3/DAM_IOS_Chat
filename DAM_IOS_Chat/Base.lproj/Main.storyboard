@@ -95,14 +95,19 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4J-ZU-BZ9">
-                                                    <rect key="frame" x="29" y="16" width="356" height="29"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4J-ZU-BZ9">
+                                                    <rect key="frame" x="16" y="11" width="0.0" height="38"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.14037162065505981" green="0.16718161106109619" blue="0.22166338562965393" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Y4J-ZU-BZ9" firstAttribute="leading" secondItem="Drq-KU-S0l" secondAttribute="leadingMargin" id="NEP-lp-WWf"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Y4J-ZU-BZ9" secondAttribute="trailing" id="eBe-iK-Uz9"/>
+                                                <constraint firstItem="Y4J-ZU-BZ9" firstAttribute="bottom" secondItem="Drq-KU-S0l" secondAttribute="bottomMargin" id="epA-LA-wVZ"/>
+                                                <constraint firstItem="Y4J-ZU-BZ9" firstAttribute="top" secondItem="Drq-KU-S0l" secondAttribute="topMargin" id="z2F-EC-1Vz"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="message" destination="Y4J-ZU-BZ9" id="2Zf-Yq-xcB"/>
